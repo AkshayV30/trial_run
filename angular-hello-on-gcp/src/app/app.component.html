@@ -1,0 +1,23 @@
+<h1>Welcome, Angular - Hello - GCP to the World</h1>
+<div style="text-align: center">
+  <h1>Find Pirate by ID</h1>
+  <!-- [(ss)]="pirateId" -->
+  <input [formControl]="pirateIdControl" placeholder="Enter Pirate ID" />
+  <button (click)="getPirate()">Search Pirate</button>
+
+  <!-- <div *ngIf="pirate"> -->
+
+  @if(pirate){
+  <h2>Pirate Details</h2>
+  <p><strong>Name:</strong> {{ pirate.name }}</p>
+  <p><strong>Active:</strong> {{ pirate.active }}</p>
+  <p><strong>Country:</strong> {{ pirate.country }}</p>
+  }
+
+  <!--  -->
+  @if(error){
+  <div style="color: red">
+    <p>{{ error }}</p>
+  </div>
+  }
+</div>
