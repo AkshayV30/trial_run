@@ -8,34 +8,19 @@
 
 services:
   #--------------------------------------------
-  #       For Database
-  # -------------------------------------------
-  # mongo:
-  #   image: mongo:5.0
-  #   container_name: mongo
-  #   restart: always
-  #   environment:
-  #       MONGO_INITDB_ROOT_USERNAME: root
-  #       MONGO_INITDB_ROOT_PASSWORD: example
-  #   ports:
-  #       - "27017:27017"
-  #   volumes:
-  #       - mongo-data:/data/db
-
-  #--------------------------------------------
   #       For Backend
   # -------------------------------------------
-  backend-server:
+  backend:
     build:
-      context: .
-      dockerfile: ./backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: backend
     restart: always
-    # environment:
-    #   NODE_ENV: production
+    environment:
+      NODE_ENV: production
     # MONGO_URL: mongodb://root:example@mongo:27017/mean-db?authSource=admin
     ports:
-      - 8080:8080
+      - 3000:3000
     # depends_on:
     #   - mongo
 
@@ -44,19 +29,36 @@ services:
   # -------------------------------------------
   frontend:
     build:
-      context: .
-      dockerfile: ./angular-hello-on-gcp/Dockerfile
+      context: ./angular-app
+      dockerfile: Dockerfile
     container_name: frontend
     restart: always
-    # environment:
-    #   NODE_ENV: production
+    environment:
+      NODE_ENV: production
     ports:
-      - 8080:81
+      - 4000:4000
     depends_on:
-      - backend-server
+      - backend
 # volumes:
 #   mongo-data:
 #     driver: local
+
+#--------------------------------------------
+#       For Database
+# -------------------------------------------
+# mongo:
+#   image: mongo:5.0
+#   container_name: mongo
+#   restart: always
+#   environment:
+#       MONGO_INITDB_ROOT_USERNAME: root
+#       MONGO_INITDB_ROOT_PASSWORD: example
+#   ports:
+#       - "27017:27017"
+#   volumes:
+#       - mongo-data:/data/db
+
+# -------------
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the

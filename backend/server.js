@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 // middleware
 app.use(
   cors({
-    origin: "http://localhost:4200",
+    origin: "http://localhost:4000",
   })
 );
 app.use(express.json());

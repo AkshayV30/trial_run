@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { TrialRunServiceService } from './trial-run-service.service';
+import { ApiService } from './api.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -18,7 +18,7 @@ export class AppComponent {
   pirate: any;
   error: string = '';
 
-  constructor(private pirateService: TrialRunServiceService) {}
+  constructor(private pirateService: ApiService) {}
 
   getPirate() {
     const pirateId = this.pirateIdControl.value;
