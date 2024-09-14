@@ -43,9 +43,9 @@ env:
   PROJECT_ID: "${{ secrets.PROJECT_ID }}"
   REGION: "${{ secrets.GCP_REGION }}"
   SERVICE: "${{ secrets.GCP_SERVICE_NAME }}"
-  WORKLOAD_IDENTITY_PROVIDER: "projects/${{secrets.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/${{secrets.POOL_NAME}}/providers/${{secrets.PROVIDER_ID}}
+  WORKLOAD_IDENTITY_PROVIDER: "projects/${{secrets.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/${{secrets.POOL_NAME}}/providers/${{secrets.PROVIDER_ID}}"
   DOCKER_TAG: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_SERVICE_NAME }}:${{ github.run_id }}"
-  
+
   #   WORKLOAD_IDENTITY_PROVIDER: "projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
   #   DOCKER_TAG: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_SERVICE_NAME }}:${{ github.sha }}"
 
