@@ -70,7 +70,7 @@ jobs:
         uses: "google-github-actions/auth@v2"
         with:
           workload_identity_provider: "${{ env.WORKLOAD_IDENTITY_PROVIDER }}"
-          #   service_account: "${{ secrets.GCLOUD_SERVICE_ACCOUNT_EMAIL }}"
+          service_account: "${{ secrets.GCLOUD_SERVICE_ACCOUNT_EMAIL }}"
 
       # BEGIN - Docker auth and build
       #
