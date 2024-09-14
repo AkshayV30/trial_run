@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class TrialRunServiceService {
-  private apiUrl = 'http://localhost:8080/api/test';
+  private apiUrl = 'http://localhost:3000/api/test';
 
   constructor(private http: HttpClient) {}
 
