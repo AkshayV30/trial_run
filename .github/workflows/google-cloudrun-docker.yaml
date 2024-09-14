@@ -41,11 +41,13 @@ on: workflow_dispatch
 #> TODO: update to your workload identity provider
 env:
   PROJECT_ID: "${{ secrets.PROJECT_ID }}"
-  REGION: "us-central1"
-  SERVICE: "my-service"
-  WORKLOAD_IDENTITY_PROVIDER: "projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-  IMAGE_TAG: ${{github.run_id}}
-#   >IMAGE_TAG: ${{github.sha}}
+  REGION: "${{ secrets.GCP_REGION }}"
+  SERVICE: "${{ secrets.GCP_SERVICE_NAME }}"
+  WORKLOAD_IDENTITY_PROVIDER: "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}"
+  DOCKER_TAG: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_SERVICE_NAME }}:${{ github.run_id }}"
+
+  #   WORKLOAD_IDENTITY_PROVIDER: "projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+  #   DOCKER_TAG: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_SERVICE_NAME }}:${{ github.sha }}"
 
 jobs:
   deploy:
@@ -64,11 +66,11 @@ jobs:
       # See https://github.com/google-github-actions/auth for more options,
       # including authenticating via a JSON credentials file.
       - id: "auth"
-        name: "Authenticate to Google Cloud"
+        name: "GCP-GITHUB:Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v2"
         with:
           workload_identity_provider: "${{ env.WORKLOAD_IDENTITY_PROVIDER }}"
-          service_account: "${{ secrets.GCLOUD_SERVICE_ACCOUNT_EMAIL }}"
+          #   service_account: "${{ secrets.GCLOUD_SERVICE_ACCOUNT_EMAIL }}"
 
       # BEGIN - Docker auth and build
       #
@@ -79,20 +81,22 @@ jobs:
       #     username: "oauth2accesstoken"
       #     password: "${{ steps.auth.outputs.auth_token }}"
       #     registry: "${{ env.REGION }}-docker.pkg.dev"
-
-      - name: "Build and Push Container"
+      #
+      #
+      - name: "DOCKER: Build and Push Container"
         run: |-
-          DOCKER_TAG="$${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.IMAGE_TAG }}"
-          docker build --tag "${DOCKER_TAG}" .
-          docker push "${DOCKER_TAG}"
+          docker build --tag "${{ env.DOCKER_TAG }}" .
+          docker push "${{ env.DOCKER_TAG }}"
 
-      - name: "Deploy to Cloud Run"
-        # END - Docker auth and build
+      #  END - Docker auth and build
+
+      - name: "GCP-GITHUB: Deploy to Cloud Run"
         uses: "google-github-actions/deploy-cloudrun@v2"
         with:
           service: "${{ env.SERVICE }}"
           region: "${{ env.REGION }}"
-          image: "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.IMAGE_TAG}}"
+          image: "${{ env.DOCKER_TAG }}"
+
       # If required, use the Cloud Run URL output in later steps
-      - name: "Show output"
+      - name: "GCP-GITHUB: Show output"
         run: echo "Deployed to ${{ steps.deploy.outputs.url }}"
