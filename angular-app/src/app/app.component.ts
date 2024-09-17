@@ -15,15 +15,31 @@ export class AppComponent {
 
   pirateIdControl = new FormControl('');
 
+  generatedContent: string = '';
+
   pirate: any;
   error: string = '';
 
-  constructor(private pirateService: ApiService) {}
+  constructor(private apiService: ApiService) {}
+
+  generateContent() {
+    const promptText = 'optimize the missing dimension';
+    const filePath = './assets/testImage.jpeg'; // Example file path
+
+    this.apiService.generateContent(promptText, filePath).subscribe({
+      next: (response: { data: string }) => {
+        this.generatedContent = response.data;
+      },
+      error: (error: any) => {
+        console.error('Error generating content', error);
+      },
+    });
+  }
 
   getPirate() {
     const pirateId = this.pirateIdControl.value;
     // Call the service to get pirate data
-    this.pirateService.getPirate(Number(pirateId)).subscribe(
+    this.apiService.getPirate(Number(pirateId)).subscribe(
       (response: any) => {
         // console.log(response);
         this.pirate = response.data;

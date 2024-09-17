@@ -85,18 +85,19 @@ jobs:
       #
       - name: "DOCKER: Build and Push Container"
         run: |-
-          docker compose build --tag "${{ env.DOCKER_TAG }}" 
-          docker push "${{ env.DOCKER_TAG }}"
+          docker compose build 
+          docker -t "${{ env.DOCKER_TAG }}" 
+          # docker push "${{ env.DOCKER_TAG }}"
 
       #  END - Docker auth and build
 
-      - name: "GCP-GITHUB: Deploy to Cloud Run"
-        uses: "google-github-actions/deploy-cloudrun@v2"
-        with:
-          service: "${{ env.SERVICE }}"
-          region: "${{ env.REGION }}"
-          image: "${{ env.DOCKER_TAG }}"
+      # - name: "GCP-GITHUB: Deploy to Cloud Run"
+      #   uses: "google-github-actions/deploy-cloudrun@v2"
+      #   with:
+      #     service: "${{ env.SERVICE }}"
+      #     region: "${{ env.REGION }}"
+      #     image: "${{ env.DOCKER_TAG }}"
 
-      # If required, use the Cloud Run URL output in later steps
-      - name: "GCP-GITHUB: Show output"
-        run: echo "Deployed to ${{ steps.deploy.outputs.url }}"
+      # # If required, use the Cloud Run URL output in later steps
+      # - name: "GCP-GITHUB: Show output"
+      #   run: echo "Deployed to ${{ steps.deploy.outputs.url }}"

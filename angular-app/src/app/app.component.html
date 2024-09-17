@@ -21,3 +21,21 @@
   </div>
   }
 </div>
+
+<div>
+  <input placeholder="Enter prompt text" />
+  <input placeholder="Enter imgage" />
+  <!-- tod do 
+1. takes input as an image   
+2. convert it inot base64
+3. send this data to vertex api
+4.  retrive the data and preview in the frotend
+
+-->
+  <div>
+    Preview
+
+    <button (click)="generateContent()">Generate Content</button>
+    <p>{{ generatedContent }}</p>
+  </div>
+</div>

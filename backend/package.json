@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "start:dev": "node ./src/server.js"
   },
   "type": "module",
   "keywords": [],
@@ -11,6 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/storage": "^7.12.1",
+    "@google-cloud/vertexai": "^1.7.0",
     "cors": "^2.8.5",
     "express": "^4.21.0"
   },

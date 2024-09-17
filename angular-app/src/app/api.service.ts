@@ -18,4 +18,8 @@ export class ApiService {
   getPirate(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
+
+  generateContent(promptText: string, filePath: string): Observable<any> {
+    return this.http.post(this.apiUrl, { promptText, filePath });
+  }
 }
