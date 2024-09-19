@@ -22,19 +22,19 @@ export class AppComponent {
 
   constructor(private apiService: ApiService) {}
 
-  generateContent() {
-    const promptText = 'optimize the missing dimension';
-    const filePath = './assets/testImage.jpeg'; // Example file path
+  // generateContent() {
+  //   const promptText = 'optimize the missing dimension';
+  //   const filePath = './assets/testImage.jpeg'; // Example file path
 
-    this.apiService.generateContent(promptText, filePath).subscribe({
-      next: (response: { data: string }) => {
-        this.generatedContent = response.data;
-      },
-      error: (error: any) => {
-        console.error('Error generating content', error);
-      },
-    });
-  }
+  //   this.apiService.generateContent(promptText, filePath).subscribe({
+  //     next: (response: { data: string }) => {
+  //       this.generatedContent = response.data;
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error generating content', error);
+  //     },
+  //   });
+  // }
 
   getPirate() {
     const pirateId = this.pirateIdControl.value;

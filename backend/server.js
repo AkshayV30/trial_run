@@ -3,7 +3,7 @@ import path from "path";
 import cors from "cors";
 import { fileURLToPath } from "url";
 
-import { generateContent } from "./vertexService.js";
+// import { generateContent } from "./vertexService.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,24 +25,24 @@ app.get("/", (req, res) => {
       <h1>  hello World : hackathon</h1>`);
 });
 
-// app.get("/api/test/:id", (req, res) => {
-//   const id = parseInt(req.params.id, 10);
-//   const pirate = getPirate(id);
-//   if (!pirate) {
-//     res.status(404).send({ error: `Pirate with ID ${id} not found` });
-//   } else {
-//     res.send({ data: pirate });
-//   }
-// });
+app.get("/api/test/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const pirate = getPirate(id);
+  if (!pirate) {
+    res.status(404).send({ error: `Pirate with ID ${id} not found` });
+  } else {
+    res.send({ data: pirate });
+  }
+});
 
-// function getPirate(id) {
-//   const pirates = [
-//     { id: 1, name: "Pirate One", active: "1956-1999", country: "Germany" },
-//     { id: 2, name: "Pirate Two", active: "1999-2000", country: "Austria" },
-//     { id: 3, name: "Pirate Three", active: "2000-2100", country: "Nepal" },
-//   ];
-//   return pirates.find((p) => p.id === id); // Find and return the pirate object with the matching ID
-// }
+function getPirate(id) {
+  const pirates = [
+    { id: 1, name: "Pirate One", active: "1956-1999", country: "Germany" },
+    { id: 2, name: "Pirate Two", active: "1999-2000", country: "Austria" },
+    { id: 3, name: "Pirate Three", active: "2000-2100", country: "Nepal" },
+  ];
+  return pirates.find((p) => p.id === id); // Find and return the pirate object with the matching ID
+}
 app.post("/api/generate", async (req, res) => {
   try {
     const { promptText, filePath } = req.body;

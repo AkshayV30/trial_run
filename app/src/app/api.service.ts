@@ -10,8 +10,6 @@ export class ApiService {
   // private apiUrl = 'http://localhost:3000/api/test';
   private apiUrl = environment.apiUrl;
 
-  private domain!: string;
-
   constructor(private http: HttpClient) {}
 
   // Method to get pirate data by ID
