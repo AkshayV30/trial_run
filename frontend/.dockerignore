@@ -32,3 +32,12 @@
 **/dist
 LICENSE
 README.md
+
+
+# Ignore Android app-related files and directories
+**/android/
+**/app/build/
+**/app/release/
+**/app/debug/
+**/*.apk
+**/*.aab
