@@ -35,7 +35,7 @@ README.md
 
 
 # Ignore Android app-related files and directories
-**/android/
+**/android/*
 **/app/build/
 **/app/release/
 **/app/debug/

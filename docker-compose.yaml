@@ -11,6 +11,7 @@ services:
   #       For Backend
   # -------------------------------------------
   backend:
+    image: trial_run-backend:latest
     build:
       context: ./backend
       dockerfile: backendDockerfile
@@ -29,6 +30,7 @@ services:
   #       For Frontend
   # -------------------------------------------
   frontend:
+    image: trial_run-frontend:latest
     build:
       context: ./frontend
       dockerfile: frontendDockerfile
