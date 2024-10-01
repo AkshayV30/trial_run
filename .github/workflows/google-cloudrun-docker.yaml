@@ -44,10 +44,8 @@ env:
   REGION: "${{ secrets.GCP_REGION }}"
   SERVICE: "${{ secrets.GCP_SERVICE_NAME }}"
   WORKLOAD_IDENTITY_PROVIDER: "projects/${{secrets.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/${{secrets.POOL_NAME}}/providers/${{secrets.PROVIDER_ID}}"
-  DOCKER_TAG: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_SERVICE_NAME }}:${{ github.run_id }}"
-
-  #   WORKLOAD_IDENTITY_PROVIDER: "projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-  #   DOCKER_TAG: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_SERVICE_NAME }}:${{ github.sha }}"
+  DOCKER_TAG_FRONTEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}-angular-app:${{ github.run_id }}"
+  DOCKER_TAG_BACKEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}-nodejs-app:${{ github.run_id }}"
 
 jobs:
   deploy:
@@ -72,25 +70,20 @@ jobs:
           workload_identity_provider: "${{ env.WORKLOAD_IDENTITY_PROVIDER }}"
           service_account: "${{ secrets.GCLOUD_SERVICE_ACCOUNT_EMAIL }}"
 
-      # BEGIN - Docker auth and build
-      #
-      # If you already have a container image, you can omit these steps.
-      # - name: "Docker Auth"
-      #   uses: "docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567" # docker/login-action@v3
-      #   with:
-      #     username: "oauth2accesstoken"
-      #     password: "${{ steps.auth.outputs.auth_token }}"
-      #     registry: "${{ env.REGION }}-docker.pkg.dev"
-      #
-      #
-      - name: "DOCKER: Build and Push Container"
+      - name: "DOCKER: Build images"
         run: |-
-          docker compose build 
+          docker compose build
+
+      - name: "DOCKER: Push images to Artifact Registry"
+        run: |-
           docker images
+          docker tag angular-app "${{ env.DOCKER_TAG_FRONTEND }}" 
+          docker tag nodejs-app "${{ env.DOCKER_TAG_BACKEND }}" 
+          docker push "${{ env.DOCKER_TAG_FRONTEND }}" 
+          docker push "${{ env.DOCKER_TAG_BACKEND }}" 
+
           # docker tag "${{ env.SERVICE }}" "${{ env.DOCKER_TAG }}" 
           # docker push "${{ env.DOCKER_TAG }}"
-
-      #  END - Docker auth and build
 
       # - name: "GCP-GITHUB: Deploy to Cloud Run"
       #   uses: "google-github-actions/deploy-cloudrun@v2"

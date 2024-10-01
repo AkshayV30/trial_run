@@ -1,4 +1,3 @@
-// controllers/pirateController.js
 import { getPirate } from "../models/model.js";
 
 export const getPirateById = (req, res) => {

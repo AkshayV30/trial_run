@@ -1,4 +1,3 @@
-// routes/pirateRoutes.js
 import express from "express";
 import { getPirateById, welcomeMessage } from "../controllers/controller.js";
 

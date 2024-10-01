@@ -1,7 +1,7 @@
 import express from "express";
 import { fileURLToPath } from "url";
 import path from "path";
-import cors from "cors";
+
 import pirateRoutes from "./routes/routes.js";
 import { corsMiddleware } from "./middlewares/corsMiddleware.js";
 import { generateContent } from "./services/vertexService.js";

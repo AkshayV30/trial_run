@@ -11,7 +11,7 @@ services:
   #       For Backend
   # -------------------------------------------
   backend:
-    image: trial_run-backend:latest
+    image: nodejs-app
     build:
       context: ./backend
       dockerfile: backendDockerfile
@@ -30,7 +30,7 @@ services:
   #       For Frontend
   # -------------------------------------------
   frontend:
-    image: trial_run-frontend:latest
+    image: angular-app
     build:
       context: ./frontend
       dockerfile: frontendDockerfile
