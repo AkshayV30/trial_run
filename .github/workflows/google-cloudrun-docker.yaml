@@ -87,7 +87,7 @@ jobs:
         run: |-
           docker compose build 
           docker tag "${{ env.SERVICE }}" "${{ env.DOCKER_TAG }}" 
-          # docker push "${{ env.DOCKER_TAG }}"
+          docker push "${{ env.DOCKER_TAG }}"
 
       #  END - Docker auth and build
 
