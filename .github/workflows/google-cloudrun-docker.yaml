@@ -39,6 +39,8 @@ env:
   PROJECT_ID: "${{ secrets.PROJECT_ID }}"
   REGION: "${{ secrets.GCP_REGION }}"
   SERVICE: "${{ secrets.GCP_SERVICE_NAME }}"
+  SERVICE_FRONTEND: "${{ secrets.GCP_SERVICE_FRONTEND_NAME }}"
+  SERVICE_BACKEND: "${{ secrets.GCP_SERVICE_BACKEND_NAME }}"
   WORKLOAD_IDENTITY_PROVIDER: "projects/${{secrets.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/${{secrets.POOL_NAME}}/providers/${{secrets.PROVIDER_ID}}"
   DOCKER_TAG_FRONTEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/angular-app:${{ github.run_id }}"
   DOCKER_TAG_BACKEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/nodejs-app:${{ github.run_id }}"
@@ -76,18 +78,25 @@ jobs:
           docker tag angular-app:latest "${{ env.DOCKER_TAG_FRONTEND }}" 
           docker tag nodejs-app:latest "${{ env.DOCKER_TAG_BACKEND }}" 
           docker push "${{ env.DOCKER_TAG_FRONTEND }}" 
-          docker push "${{ env.DOCKER_TAG_BACKEND }}" 
+          docker push "${{ env.DOCKER_TAG_BACKEND }}"
 
-          # docker tag "${{ env.SERVICE }}" "${{ env.DOCKER_TAG }}" 
-          # docker push "${{ env.DOCKER_TAG }}"
-
-      # - name: "GCP-GITHUB: Deploy to Cloud Run"
+      # - name: "GCP-GITHUB:  Deploy Frontend to Cloud Run"
       #   uses: "google-github-actions/deploy-cloudrun@v2"
       #   with:
-      #     service: "${{ env.SERVICE }}"
+      #     service: "${{ env.SERVICE_FRONTEND }}"
       #     region: "${{ env.REGION }}"
-      #     image: "${{ env.DOCKER_TAG }}"
+      #     image: "${{ env.DOCKER_TAG_FRONTEND }}"
 
-      # # If required, use the Cloud Run URL output in later steps
-      # - name: "GCP-GITHUB: Show output"
-      #   run: echo "Deployed to ${{ steps.deploy.outputs.url }}"
+      # - name: "GCP-GITHUB:  Deploy Backend to Cloud Run"
+      #   uses: "google-github-actions/deploy-cloudrun@v2"
+      #   with:
+      #     service: "${{ env.SERVICE_BACKEND }}"
+      #     region: "${{ env.REGION }}"
+      #     image: "${{ env.DOCKER_TAG_BACKEND }}"
+
+      # # Output the Cloud Run URLs
+      # - name: "Show Frontend Service URL"
+      #   run: echo "Frontend deployed at ${{ steps.deploy.outputs.url }}"
+
+      # - name: "Show Backend Service URL"
+      #   run: echo "Backend deployed at ${{ steps.deploy.outputs.url }}"
