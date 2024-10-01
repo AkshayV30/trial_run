@@ -5,7 +5,6 @@ dotenv.config();
 const allowedOrigins = [
   "http://localhost:4200", // Angular development server
   "http://localhost:4000", // Angular SSR server
-  "http://frontend:4000", // Production URL
 ];
 
 export const corsMiddleware = (req, res, next) => {
