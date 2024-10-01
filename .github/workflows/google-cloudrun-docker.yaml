@@ -35,17 +35,13 @@ name: "Build and Deploy to Cloud Run"
 
 on: workflow_dispatch
 
-#> TODO: update to your Google Cloud project ID
-#> TODO: update to your region
-#> TODO: update to your service name
-#> TODO: update to your workload identity provider
 env:
   PROJECT_ID: "${{ secrets.PROJECT_ID }}"
   REGION: "${{ secrets.GCP_REGION }}"
   SERVICE: "${{ secrets.GCP_SERVICE_NAME }}"
   WORKLOAD_IDENTITY_PROVIDER: "projects/${{secrets.PROJECT_NUMBER}}/locations/global/workloadIdentityPools/${{secrets.POOL_NAME}}/providers/${{secrets.PROVIDER_ID}}"
-  DOCKER_TAG_FRONTEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}-angular-app:${{ github.run_id }}"
-  DOCKER_TAG_BACKEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}-nodejs-app:${{ github.run_id }}"
+  DOCKER_TAG_FRONTEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/angular-app:${{ github.run_id }}"
+  DOCKER_TAG_BACKEND: "${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GCP_REPO_NAME }}/nodejs-app:${{ github.run_id }}"
 
 jobs:
   deploy:
@@ -77,8 +73,8 @@ jobs:
       - name: "DOCKER: Push images to Artifact Registry"
         run: |-
           docker images
-          docker tag angular-app "${{ env.DOCKER_TAG_FRONTEND }}" 
-          docker tag nodejs-app "${{ env.DOCKER_TAG_BACKEND }}" 
+          docker tag angular-app:latest "${{ env.DOCKER_TAG_FRONTEND }}" 
+          docker tag nodejs-app:latest "${{ env.DOCKER_TAG_BACKEND }}" 
           docker push "${{ env.DOCKER_TAG_FRONTEND }}" 
           docker push "${{ env.DOCKER_TAG_BACKEND }}" 
 
