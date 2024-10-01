@@ -86,7 +86,7 @@ jobs:
       - name: "DOCKER: Build and Push Container"
         run: |-
           docker compose build 
-          docker -t "${{ env.DOCKER_TAG }}" 
+          docker tag "${{ env.SERVICE }}" "${{ env.DOCKER_TAG }}" 
           # docker push "${{ env.DOCKER_TAG }}"
 
       #  END - Docker auth and build
