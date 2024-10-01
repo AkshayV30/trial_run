@@ -13,7 +13,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: backendDockerfile
     container_name: backend
     restart: always
     environment:
@@ -22,6 +22,7 @@ services:
     ports:
       - 3000:3000
     # depends_on:
+    #
     #   - mongo
 
   #--------------------------------------------
@@ -29,8 +30,8 @@ services:
   # -------------------------------------------
   frontend:
     build:
-      context: ./app
-      dockerfile: Dockerfile
+      context: ./frontend
+      dockerfile: frontendDockerfile
     container_name: frontend
     restart: always
     environment:

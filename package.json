@@ -1,0 +1,15 @@
+{
+  "name": "starting-angular-nodejs",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run dev --prefix ./backend\" \"npm start --prefix ./frontend\"",
+    "start:prod": "concurrently \"npm run start --prefix ./backend\" \"npm run serve:ssr:angular-app --prefix ./frontend\""
+  },
+  "keywords": [],
+  "author": "AkshayV30",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

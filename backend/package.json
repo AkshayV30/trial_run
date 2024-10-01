@@ -1,9 +1,10 @@
 {
   "name": "trial_run",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "type": "module",
   "keywords": [],
@@ -14,9 +15,11 @@
     "@google-cloud/storage": "^7.12.1",
     "@google-cloud/vertexai": "^1.7.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21"
+    "@types/express": "^4.17.21",
+    "nodemon": "^3.1.7"
   }
 }
