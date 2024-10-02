@@ -3,17 +3,10 @@ header {
   h1 {
     font-size: 1.6rem;
   }
-}
-
-.preview-img {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    max-width: 40%;
-    height: auto;
-  }
+  padding: 1rem;
+  background-color: aliceblue;
+  width: 100vw;
+  box-shadow: 0.2rem 0.4rem 0.8rem rgba($color: #000000, $alpha: 0.2);
 }
 
 .results-conteiner {
@@ -25,4 +18,35 @@ main {
   justify-content: center;
 
   gap: 2rem;
+  margin-top: 2rem;
+}
+
+mat-progress-bar {
+  display: block;
+  margin: 20px auto;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  label {
+    background-color: rgba(121, 217, 255, 0.212);
+    padding: 1rem;
+    border-radius: 2rem 2rem 0.5rem 0.5rem;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.171);
+  }
+}
+
+.preview-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 40%;
+    height: 50vh;
+  }
 }

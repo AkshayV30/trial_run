@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ApiService } from './api.service';
+import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -13,7 +14,12 @@ import { ImageUploadResponse } from './modal.interace';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ReactiveFormsModule, CustomMaterialModule],
+  imports: [
+    RouterOutlet,
+    ReactiveFormsModule,
+    CustomMaterialModule,
+    CommonModule,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -26,9 +32,11 @@ export class AppComponent {
 
   error = signal('');
   imageInput = signal<File | null>(null);
+  loading = signal(false);
 
   generatedContent: ImageUploadResponse | undefined;
   imageUrl: string | ArrayBuffer | null = null;
+  generatedError: string = '';
 
   //  // stage 2
   form: FormGroup = this.fb.group({
@@ -56,6 +64,8 @@ export class AppComponent {
   onSubmit() {
     if (this.imageInput() !== null) {
       const formData = new FormData();
+
+      this.loading.set(true);
       formData.append('imageInput', this.imageInput()!);
 
       const subscription = this.apiService
@@ -69,9 +79,14 @@ export class AppComponent {
               imagePath: response.imagePath,
               generatedResponse: response.generatedResponse,
             };
+
+            this.loading.set(false);
           },
           error: (err) => {
             console.error('Upload failed:', err.message);
+
+            this.generatedError = err.message;
+            this.loading.set(false);
           },
         });
 

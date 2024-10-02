@@ -5,7 +5,7 @@
   </h1>
 </header>
 
-<mat-divider />
+@if (loading()) {<mat-progress-bar mode="indeterminate" />}
 
 <main>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -21,20 +21,51 @@
       hidden
     />
 
-    <button mat-raised-button>Inspect the Product</button>
+    <button
+      mat-raised-button
+      color="primary
+    "
+      [disabled]="loading()"
+    >
+      Inspect the Product
+    </button>
   </form>
-  <mat-divider />
+
   @if (imageUrl) {
   <picture class="preview-img">
     <img [src]="imageUrl" alt="Preview Image" />
   </picture>
 
-  } @if (generatedContent) {
-  <div class="results-conteiner">
-    <p>Quality of the Product: {{ generatedContent.generatedResponse }}</p>
-  </div>
-
   }
+
+  <!-- ------------ -->
+
+  <!-- ----------------------- -->
+
+  <div class="results-container">
+    @if (generatedContent) {
+    <p>
+      Quality of the Product:
+
+      <span
+        [ngStyle]="{ 
+          color: '#fff',
+          background:
+          generatedContent.generatedResponse.trim().toLowerCase() === 'ok' ? '#008000' : '#ff0000',
+           
+        }"
+      >
+        {{ generatedContent.generatedResponse }}
+      </span>
+    </p>
+    }@else if (generatedError) {
+    <div class="results-container">
+      <p style="color: #ff0000">
+        Error generating response: {{ generatedError }}
+      </p>
+    </div>
+    }
+  </div>
 </main>
 
-<mat-divider></mat-divider>
+<footer></footer>
