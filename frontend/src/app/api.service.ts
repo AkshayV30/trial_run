@@ -13,33 +13,8 @@ export class ApiService {
   private apiUrl = environment.apiUrl;
 
   private httpClient = inject(HttpClient);
-
-  promptContentText(promptText: string) {
-    return this.httpClient
-      .post<{ text: string }>(`${this.apiUrl}/generateContent/txt`, {
-        promptText,
-      })
-      .pipe(
-        catchError((error) => {
-          return throwError(() => new Error('failed to load'));
-        })
-      );
-  }
-
-  promptContent(promptText: string, filePath: string) {
-    return this.httpClient
-      .post(`${this.apiUrl}/genrateResult`, {
-        filePath,
-      })
-      .pipe(
-        catchError((error) => {
-          return throwError(() => new Error('failed to load'));
-        })
-      );
-  }
-
-  // Updated method for image upload
-  uploadImage(formData: FormData) {
+  // stage 2
+  callTheQualityInspector(formData: FormData) {
     return this.httpClient
       .post<ImageUploadResponse>(`${this.apiUrl}/upload`, formData)
       .pipe(
@@ -50,4 +25,16 @@ export class ApiService {
         })
       );
   }
+  // stage 1
+  // promptContentText(promptText: string) {
+  //   return this.httpClient
+  //     .post<{ text: string }>(`${this.apiUrl}/generateContent/txt`, {
+  //       promptText,
+  //     })
+  //     .pipe(
+  //       catchError((error) => {
+  //         return throwError(() => new Error('failed to load'));
+  //       })
+  //     );
+  // }
 }

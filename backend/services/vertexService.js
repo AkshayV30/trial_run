@@ -1,6 +1,5 @@
 import {
   VertexAI,
-  FunctionDeclarationSchemaType,
   HarmBlockThreshold,
   HarmCategory,
 } from "@google-cloud/vertexai";
@@ -9,7 +8,6 @@ import { Storage } from "@google-cloud/storage";
 import fs from "fs";
 import path from "path";
 
-//to be updated TODO:  for github secrets ,model bucketname, project name, location
 const model = "gemini-1.5-flash-001";
 const bucketName = "bucket-test-hackathon";
 
@@ -90,7 +88,7 @@ function logTokenUsage(response) {
      `);
 }
 
-// Function to extract text from the response  //for trial run first try
+// Function to extract text from the response
 function extractTextFromResponse(response) {
   return response?.candidates
     ?.map((candidate) =>
@@ -102,20 +100,14 @@ function extractTextFromResponse(response) {
 
 // ----------------------------------------
 // For the quality inspector //image
+// stage 2
 // ----------------------------------------
 export const generatdResultResponse = async (filePath) => {
   try {
     const mimeType = "image/png";
 
     const filePart = fileToGenerativePart(filePath, mimeType);
-    // const filePart = {
-    //   // for images
-    //   // fileData: { fileUri: destinationUri, mimeType: "image/jpeg" },
-    //   // for videos
-    //   // fileData: { fileUri: destinationUri, mimeType: "video/mp4" },
 
-    //   fileData: { fileUri: filePath, mimeType: "image/jpeg" },
-    // };
     const textPart = {
       text: "Inspect Image",
     };
@@ -150,37 +142,39 @@ export const generatdResultResponse = async (filePath) => {
     console.error("Error generating story:", error);
   }
 };
+
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// stage 1
 // ------------------------------------------------------
-export const generateContentWithText = async (promptText) => {
-  try {
-    const req = {
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: promptText }],
-        },
-      ],
-    };
+// export const generateContentWithText = async (promptText) => {
+//   try {
+//     const req = {
+//       contents: [
+//         {
+//           role: "user",
+//           parts: [{ text: promptText }],
+//         },
+//       ],
+//     };
 
-    // ----------------------------------------
-    // For nonstreamed Text Response
-    // ----------------------------------------
+//     // ----------------------------------------
+//     // For nonstreamed Text Response
+//     // ----------------------------------------
 
-    const nonStreamingResp = await generativeModel.generateContent(req);
-    const response = nonStreamingResp.response;
+//     const nonStreamingResp = await generativeModel.generateContent(req);
+//     const response = nonStreamingResp.response;
 
-    const extractedText = extractTextFromResponse(response);
+//     const extractedText = extractTextFromResponse(response);
 
-    if (extractedText) {
-      console.log("Extracted Text: ", extractedText);
-      logTokenUsage(response);
-      return `Extracted text for prompt  ${promptText} : ${extractedText}`;
-    } else {
-      console.log("No valid text found in the response.");
-      return `No valid text found in the response for: ${promptText} `;
-    }
-  } catch (error) {
-    console.error("Error generating story:", error);
-  }
-};
+//     if (extractedText) {
+//       console.log("Extracted Text: ", extractedText);
+//       logTokenUsage(response);
+//       return `Extracted text for prompt  ${promptText} : ${extractedText}`;
+//     } else {
+//       console.log("No valid text found in the response.");
+//       return `No valid text found in the response for: ${promptText} `;
+//     }
+//   } catch (error) {
+//     console.error("Error generating story:", error);
+//   }
+// };
