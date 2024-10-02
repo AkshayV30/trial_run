@@ -7,24 +7,34 @@
 
 <main>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <input formControlName="promptInput" placeholder="Enter Prompt" />
+    <!-- <input formControlName="promptInput" placeholder="Enter Prompt" /> -->
 
-    <!-- <input
-      [formControl]="promptImageControl"
-      placeholder="upload an  image"
+    <label for="files">
+      upload an image of the product to check its quality</label
+    >
+    <input
+      formControlName="imageInput"
+      id="files"
       type="file"
       accept="image/*"
-    /> -->
+      (change)="onFileSelected($event)"
+      hidden
+    />
 
     <button mat-raised-button>Generate Content</button>
-    @if (generatedContent) {
-    <p>{{ generatedContent }}</p>
-    }
-    <!-- @if (imageUrl) {
-
-    <img [src]="imageUrl" alt="Uploaded Image" />} 
-    -->
   </form>
+  <mat-divider />
+  @if (imageUrl) {
+  <picture class="preview-img">
+    <img [src]="imageUrl" alt="Preview Image" />
+  </picture>
+
+  } @if (generatedContent) {
+  <div class="results-conteiner">
+    <p>Quality of the Product: {{ generatedContent.generatedResponse }}</p>
+  </div>
+
+  }
 </main>
 <!--
 

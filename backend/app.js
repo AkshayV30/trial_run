@@ -1,6 +1,8 @@
 import express from "express";
 
 import { corsMiddleware } from "./middlewares/corsMiddleware.js";
+import { rateLimitMiddleware } from "./middlewares/rateLimitingMiddleware.js";
+
 import { errorHandler } from "./utils/errorHandler.js";
 import contentRoutes from "./routes/contentRoutes.js";
 
@@ -11,6 +13,7 @@ const app = express();
 // ----------------------------------------------------
 app.use(express.json());
 app.use(corsMiddleware);
+// app.use(rateLimitMiddleware);
 // =====================================================
 
 // ----------------------------------------------------

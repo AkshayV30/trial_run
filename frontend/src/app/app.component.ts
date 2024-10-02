@@ -7,9 +7,10 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { CustomMaterialModule } from './custom-material.module';
-import { debounceTime } from 'rxjs';
+import { ImageUploadResponse } from './modal.interace';
 
 @Component({
   selector: 'app-root',
@@ -21,42 +22,92 @@ import { debounceTime } from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'angular-app';
 
-  // places = signal<Place[] | undefined>(undefined);
   error = signal('');
   private apiService = inject(ApiService);
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
 
-  form = new FormGroup({
-    promptInput: new FormControl(''),
+  generatedContent: ImageUploadResponse | undefined;
+
+  imageInput = signal<File | null>(null);
+
+  // form = new FormGroup({
+  //   promptInput: new FormControl(''),
+  // });
+
+  form: FormGroup = this.fb.group({
+    imageInput: [null, Validators.required],
   });
-
-  generatedContent: string = '';
 
   ngOnInit() {}
 
+  // onSubmit() {
+  //   console.log(this.form.value);
+
+  //   // this.generatedContent = this.form.value.promptInput ?? '';
+
+  //   const promptText = this.form.value.promptInput ?? '';
+
+  //   if (promptText.trim()) {
+  //     // Calling API service to send the prompt
+  //     const subscription = this.apiService
+  //       .promptContentText(promptText)
+  //       .subscribe({
+  //         next: (response) => {
+  //           // Update the generated content with the response text from the backend
+  //           console.log(response);
+  //           this.generatedContent = response.text;
+  //         },
+  //         error: (error: Error) => {
+  //           console.error('Error:', error);
+  //           this.error.set(error.message);
+  //         },
+  //       });
+  //     this.destroyRef.onDestroy(() => subscription.unsubscribe());
+  //   }
+  // }
+
+  imageUrl: string | ArrayBuffer | null = null; // For image preview
+
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+
+    if (file) {
+      console.log('File selected:', file);
+
+      this.imageInput.set(file);
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      console.error('No file selected');
+    }
+  }
+
   onSubmit() {
-    console.log(this.form.value);
+    if (this.imageInput() !== null) {
+      const formData = new FormData();
+      formData.append('imageInput', this.imageInput()!);
 
-    // this.generatedContent = this.form.value.promptInput ?? '';
+      this.apiService.uploadImage(formData).subscribe({
+        next: (response) => {
+          console.log('Upload successful:', response);
 
-    const promptText = this.form.value.promptInput ?? '';
-
-    if (promptText.trim()) {
-      // Calling API service to send the prompt
-      const subscription = this.apiService
-        .promptContentText(promptText)
-        .subscribe({
-          next: (response) => {
-            // Update the generated content with the response text from the backend
-            console.log(response);
-            this.generatedContent = response.text;
-          },
-          error: (error: Error) => {
-            console.error('Error:', error);
-            this.error.set(error.message);
-          },
-        });
-      this.destroyRef.onDestroy(() => subscription.unsubscribe());
+          this.generatedContent = {
+            message: response.message,
+            imagePath: response.imagePath,
+            generatedResponse: response.generatedResponse,
+          };
+        },
+        error: (err) => {
+          console.error('Upload failed:', err.message);
+        },
+      });
+    } else {
+      console.error('Form is invalid');
     }
   }
 }

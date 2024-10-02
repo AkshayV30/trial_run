@@ -18,35 +18,48 @@ export const postContentText = async (req, res, next) => {
     }
     const generatedContent = await generateContentWithText(promptText);
 
-    // Process the prompt and generate content
-    // const generatedContent = `Generated content for: ${promptText}`;
-
     res.status(200).json({ text: generatedContent });
   } catch (error) {
     res.status(500).send({ error: "Error generating text content" });
   }
+
+  next();
 };
 
 export const genratedResult = async (req, res, next) => {
   try {
-    const { promptText } = req.body;
-    // const generatedResponse = await generateContentWithText(promptText);
-    // res.status(200).send({ data: generatedResponse });
-    res.status(200).send("done get");
+    const { filePath } = req.body;
+    const generatedResponse = await generatdResultResponse(filePath);
+    res.status(200).send({ data: generatedResponse });
   } catch (error) {
     res.status(500).send({ error: "Error retriveing text content" });
   }
+
+  next();
 };
 
-// export const generateContentImage = async (req, res) => {
-//   try {
-//     const { promptText, filePath } = req.body;
-//     const generatedResponse = await generateContentWithFile(
-//       promptText,
-//       filePath
-//     );
-//     res.status(200).send({ data: generatedResponse });
-//   } catch (error) {
-//     res.status(500).send({ error: "Error generating image content" });
-//   }
-// };
+export const uploadImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    const imageFilePath = req.file.path;
+
+    console.log("Uploaded file:", imageFilePath);
+
+    const generatedResponse = await generatdResultResponse(imageFilePath);
+    // console.log("Generated response:", generatedResponse);
+    console.log(generatedResponse);
+
+    // Respond with success message or generated content
+    res.json({
+      message: "Image uploaded successfully",
+      imagePath: imageFilePath,
+      generatedResponse: generatedResponse,
+    });
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    res.status(500).send({ error: "Error uploading image" });
+  }
+  next();
+};

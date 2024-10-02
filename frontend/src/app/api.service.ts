@@ -3,6 +3,7 @@ import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 
 import { environment } from '../environments/environment';
+import { ImageUploadResponse } from './modal.interace';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,6 @@ import { environment } from '../environments/environment';
 export class ApiService {
   error = signal('');
   private apiUrl = environment.apiUrl;
-
-  private destroyRef = inject(DestroyRef);
 
   private httpClient = inject(HttpClient);
 
@@ -30,12 +29,24 @@ export class ApiService {
   promptContent(promptText: string, filePath: string) {
     return this.httpClient
       .post(`${this.apiUrl}/genrateResult`, {
-        promptText,
         filePath,
       })
       .pipe(
         catchError((error) => {
           return throwError(() => new Error('failed to load'));
+        })
+      );
+  }
+
+  // Updated method for image upload
+  uploadImage(formData: FormData) {
+    return this.httpClient
+      .post<ImageUploadResponse>(`${this.apiUrl}/upload`, formData)
+      .pipe(
+        catchError((error) => {
+          return throwError(
+            () => new Error('Image upload failed: ' + error.message)
+          );
         })
       );
   }

@@ -46,9 +46,16 @@ export const generativeModel = vertex_ai.preview.getGenerativeModel({
       threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
     },
   ],
-  // systemInstruction: {
-  //   parts: [{ text: `Tell me about the image weather it is good or bad` }],
-  // },
+  systemInstruction: {
+    parts: [
+      {
+        text: `You are a Quality Inspector.`,
+      },
+      { text: ` Inspecting image if they are good in condition or not.` },
+      { text: `  If the Image is bad : response not ok` },
+      { text: ` if the image is good : response ok ` },
+    ],
+  },
 });
 // // for cloud storage
 // const storage = new Storage();
@@ -59,80 +66,58 @@ export const generativeModel = vertex_ai.preview.getGenerativeModel({
 //   return files.length > 0;
 // }
 
-// function fileToGenerativePart(path, mimeType) {
-//   return {
-//     inlineData: {
-//       data: Buffer.from(fs.readFileSync(path)).toString("base64"),
-//       mimeType,
-//     },
-//   };
-// }
+function fileToGenerativePart(path, mimeType) {
+  return {
+    inlineData: {
+      data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+      mimeType,
+    },
+  };
+}
 
-export const generateContentWithText = async (promptText) => {
+// Function to log token usage
+function logTokenUsage(response) {
+  const extractedCandidatesTokenCount =
+    response?.usageMetadata?.candidatesTokenCount;
+  const extractedPromptTokenCount = response?.usageMetadata?.promptTokenCount;
+  const extractedTotalTokenCount = response?.usageMetadata?.totalTokenCount;
+
+  console.log(`\n----------------------------------------------------------\n`);
+  console.log(` 
+     ExtractedPromptTokenCount :   ${extractedPromptTokenCount},
+     ExtractedCandidatesTokenCount :  ${extractedCandidatesTokenCount},
+     ExtractedTotalTokenCount :   ${extractedTotalTokenCount}
+     `);
+}
+
+// Function to extract text from the response  //for trial run first try
+function extractTextFromResponse(response) {
+  return response?.candidates
+    ?.map((candidate) =>
+      candidate?.content?.parts?.map((part) => part.text).join(" ")
+    )
+    .filter(Boolean)
+    .join("\n");
+}
+
+// ----------------------------------------
+// For the quality inspector //image
+// ----------------------------------------
+export const generatdResultResponse = async (filePath) => {
   try {
-    const req = {
-      contents: [
-        {
-          role: "user",
-          // parts: [{ text: `apple:what is it` }],
-          parts: [{ text: promptText }],
-        },
-      ],
-    };
+    const mimeType = "image/png";
 
-    // ----------------------------------------
-    // For nonstreamed Text Response
-    // ----------------------------------------
+    const filePart = fileToGenerativePart(filePath, mimeType);
+    // const filePart = {
+    //   // for images
+    //   // fileData: { fileUri: destinationUri, mimeType: "image/jpeg" },
+    //   // for videos
+    //   // fileData: { fileUri: destinationUri, mimeType: "video/mp4" },
 
-    const nonStreamingResp = await generativeModel.generateContent(req);
-    const response = nonStreamingResp.response;
-
-    // Extract and log the value from candidates.content.parts.text using optional chaining
-    const extractedText = response?.candidates
-      ?.map((candidate) =>
-        candidate?.content?.parts?.map((part) => part.text).join(" ")
-      )
-      .filter(Boolean)
-      .join("\n");
-
-    if (extractedText) {
-      console.log("Extracted Text: ", extractedText);
-      return `Extracted text for prompt  ${promptText} : ${extractedText}`;
-    } else {
-      console.log("No valid text found in the response.");
-      return `No valid text found in the response for: ${promptText} `;
-    }
-
-    const extractedCandidatesTokenCount =
-      response?.usageMetadata.candidatesTokenCount;
-    const extractedPromptTokenCount = response?.usageMetadata.promptTokenCount;
-    const extractedTotalTokenCount = response?.usageMetadata.totalTokenCount;
-    console.log(
-      `\n ---------------------------------------------------------- \n`
-    );
-    console.log(` 
-       ExtractedPromptTokenCount :   ${extractedPromptTokenCount},
-       ExtractedCandidatesTokenCount :  ${extractedCandidatesTokenCount},
-       ExtractedTotalTokenCount :   ${extractedTotalTokenCount}
-       `);
-  } catch (error) {
-    console.error("Error generating story:", error);
-  }
-};
-
-// for the image
-
-export const generatdResultResponse = async (promptText, filePath) => {
-  // Logic to generate content using promptText and filePath
-  try {
-    const filePart = {
-      // for images
-      fileData: { fileUri: destinationUri, mimeType: "image/jpeg" },
-      // for videos
-      // fileData: { fileUri: destinationUri, mimeType: "video/mp4" },
-    };
+    //   fileData: { fileUri: filePath, mimeType: "image/jpeg" },
+    // };
     const textPart = {
-      text: "tell me about the image",
+      text: "Inspect Image",
     };
     const req = {
       contents: [
@@ -151,34 +136,50 @@ export const generatdResultResponse = async (promptText, filePath) => {
     const nonStreamingResp = await generativeModel.generateContent(req);
     const response = nonStreamingResp.response;
 
-    // Extract and log the value from candidates.content.parts.text using optional chaining
-    const extractedText = response?.candidates
-      ?.map((candidate) =>
-        candidate?.content?.parts?.map((part) => part.text).join(" ")
-      )
-      .filter(Boolean)
-      .join("\n");
+    const extractedText = extractTextFromResponse(response);
 
     if (extractedText) {
       console.log("Extracted Text: ", extractedText);
+      logTokenUsage(response);
+      return `Extracted text for prompt  ${filePath} : ${extractedText}`;
+    } else {
+      console.log("No valid text found in the response.");
+      return `No valid text found in the response for: ${filePath} `;
+    }
+  } catch (error) {
+    console.error("Error generating story:", error);
+  }
+};
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// ------------------------------------------------------
+export const generateContentWithText = async (promptText) => {
+  try {
+    const req = {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: promptText }],
+        },
+      ],
+    };
+
+    // ----------------------------------------
+    // For nonstreamed Text Response
+    // ----------------------------------------
+
+    const nonStreamingResp = await generativeModel.generateContent(req);
+    const response = nonStreamingResp.response;
+
+    const extractedText = extractTextFromResponse(response);
+
+    if (extractedText) {
+      console.log("Extracted Text: ", extractedText);
+      logTokenUsage(response);
       return `Extracted text for prompt  ${promptText} : ${extractedText}`;
     } else {
       console.log("No valid text found in the response.");
       return `No valid text found in the response for: ${promptText} `;
     }
-
-    const extractedCandidatesTokenCount =
-      response?.usageMetadata.candidatesTokenCount;
-    const extractedPromptTokenCount = response?.usageMetadata.promptTokenCount;
-    const extractedTotalTokenCount = response?.usageMetadata.totalTokenCount;
-    console.log(
-      `\n ---------------------------------------------------------- \n`
-    );
-    console.log(` 
-       ExtractedPromptTokenCount :   ${extractedPromptTokenCount},
-       ExtractedCandidatesTokenCount :  ${extractedCandidatesTokenCount},
-       ExtractedTotalTokenCount :   ${extractedTotalTokenCount}
-       `);
   } catch (error) {
     console.error("Error generating story:", error);
   }
