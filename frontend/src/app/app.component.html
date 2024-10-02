@@ -6,17 +6,31 @@
 </header>
 
 <main>
-  <form class="search-form">
-    <mat-form-field class="search-full-width">
-      <mat-label>Upload or Click an image </mat-label>
-      <input matInput #message2 />
-    </mat-form-field>
-    <button mat-raised-button (click)="openSnackBar(message2.value)">
-      Click to Check Quality
-    </button>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <input formControlName="promptInput" placeholder="Enter Prompt" />
+
+    <!-- <input
+      [formControl]="promptImageControl"
+      placeholder="upload an  image"
+      type="file"
+      accept="image/*"
+    /> -->
+
+    <button mat-raised-button>Generate Content</button>
+    @if (generatedContent) {
+    <p>{{ generatedContent }}</p>
+    }
+    <!-- @if (imageUrl) {
+
+    <img [src]="imageUrl" alt="Uploaded Image" />} 
+    -->
   </form>
 </main>
+<!--
 
+
+  
+-->
 <!-- tod do 
 1. takes input as an image   
 2. convert it inot base64
@@ -24,49 +38,5 @@
 4.  retrive the data and preview in the frotend
 
 -->
-<!-- <div>
-    Preview
-
-    <button (click)="generateContent()">Generate Content</button>
-    <p>{{ generatedContent }}</p>
-  </div>
-</div> -->
-
-<!-- snack bar -->
-<!-- <mat-form-field>
-  <mat-label>Message</mat-label>
-  <input matInput value="Disco party!" #message />
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Action</mat-label>
-  <input matInput value="Dance" #action />
-</mat-form-field>
-
-<button mat-stroked-button (click)="openSnackBar(message.value, action.value)">
-  Show snack-bar
-</button> -->
 
 <mat-divider></mat-divider>
-<div style="text-align: center">
-  <h1>Find Pirate by ID</h1>
-  <!-- [(ss)]="pirateId" -->
-  <input [formControl]="pirateIdControl" placeholder="Enter Pirate ID" />
-  <button mat-raised-button (click)="getPirate()">Search Pirate</button>
-
-  <!-- <div *ngIf="pirate"> -->
-
-  @if(pirate){
-  <h2>Pirate Details</h2>
-  <p><strong>Name:</strong> {{ pirate.name }}</p>
-  <p><strong>Active:</strong> {{ pirate.active }}</p>
-  <p><strong>Country:</strong> {{ pirate.country }}</p>
-  }
-
-  <!--  -->
-  @if(error){
-  <div style="color: red">
-    <p>{{ error }}</p>
-  </div>
-  }
-</div>

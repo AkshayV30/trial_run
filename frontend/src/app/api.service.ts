@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { catchError, Observable, throwError } from 'rxjs';
 
 import { environment } from '../environments/environment';
 
@@ -8,16 +8,35 @@ import { environment } from '../environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
+  error = signal('');
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  private destroyRef = inject(DestroyRef);
 
-  // Method to get pirate data by ID
-  getPirate(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+  private httpClient = inject(HttpClient);
+
+  promptContentText(promptText: string) {
+    return this.httpClient
+      .post<{ text: string }>(`${this.apiUrl}/generateContent/txt`, {
+        promptText,
+      })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new Error('failed to load'));
+        })
+      );
   }
 
-  generateContent(promptText: string, filePath: string): Observable<any> {
-    return this.http.post(this.apiUrl, { promptText, filePath });
+  promptContent(promptText: string, filePath: string) {
+    return this.httpClient
+      .post(`${this.apiUrl}/genrateResult`, {
+        promptText,
+        filePath,
+      })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new Error('failed to load'));
+        })
+      );
   }
 }

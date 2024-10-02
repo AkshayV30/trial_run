@@ -1,9 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ApiService } from './api.service';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CustomMaterialModule } from './custom-material.module';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,58 +18,45 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'angular-app';
 
-  pirateIdControl = new FormControl('');
+  // places = signal<Place[] | undefined>(undefined);
+  error = signal('');
+  private apiService = inject(ApiService);
+  private destroyRef = inject(DestroyRef);
+
+  form = new FormGroup({
+    promptInput: new FormControl(''),
+  });
 
   generatedContent: string = '';
 
-  pirate: any;
-  error: string = '';
+  ngOnInit() {}
 
-  constructor(private apiService: ApiService) {}
+  onSubmit() {
+    console.log(this.form.value);
 
-  // generateContent() {
-  //   const promptText = 'optimize the missing dimension';
-  //   const filePath = './assets/testImage.jpeg'; // Example file path
+    // this.generatedContent = this.form.value.promptInput ?? '';
 
-  //   this.apiService.generateContent(promptText, filePath).subscribe({
-  //     next: (response: { data: string }) => {
-  //       this.generatedContent = response.data;
-  //     },
-  //     error: (error: any) => {
-  //       console.error('Error generating content', error);
-  //     },
-  //   });
-  // }
+    const promptText = this.form.value.promptInput ?? '';
 
-  getPirate() {
-    const pirateId = this.pirateIdControl.value;
-    // Call the service to get pirate data
-    this.apiService.getPirate(Number(pirateId)).subscribe(
-      (response: any) => {
-        // console.log(response);
-        this.pirate = response.data;
-        this.error = '';
-      },
-      (error) => {
-        console.error('Error fetching pirate:', error);
-        this.pirate = null;
-        this.error = `Pirate with ID ${pirateId} not found.`;
-      }
-    );
-  }
-
-  // snack bar
-  private _snackBar = inject(MatSnackBar);
-
-  //   openSnackBar(message: string, action: string) {
-  //     this._snackBar.open(message, action);
-  //   }
-  // }
-
-  openSnackBar(message: string) {
-    this._snackBar.open(message);
+    if (promptText.trim()) {
+      // Calling API service to send the prompt
+      const subscription = this.apiService
+        .promptContentText(promptText)
+        .subscribe({
+          next: (response) => {
+            // Update the generated content with the response text from the backend
+            console.log(response);
+            this.generatedContent = response.text;
+          },
+          error: (error: Error) => {
+            console.error('Error:', error);
+            this.error.set(error.message);
+          },
+        });
+      this.destroyRef.onDestroy(() => subscription.unsubscribe());
+    }
   }
 }
