@@ -5,13 +5,13 @@
   </h1>
 </header>
 
+<mat-divider />
+
 <main>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <!-- <input formControlName="promptInput" placeholder="Enter Prompt" /> -->
 
-    <label for="files">
-      upload an image of the product to check its quality</label
-    >
+    <label for="files"> Click to upload </label>
     <input
       formControlName="imageInput"
       id="files"
@@ -21,7 +21,7 @@
       hidden
     />
 
-    <button mat-raised-button>Generate Content</button>
+    <button mat-raised-button>Inspect the Product</button>
   </form>
   <mat-divider />
   @if (imageUrl) {
