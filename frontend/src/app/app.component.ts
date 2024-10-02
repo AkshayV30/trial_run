@@ -39,7 +39,7 @@ export class AppComponent {
     const file = (event.target as HTMLInputElement).files?.[0];
 
     if (file) {
-      console.log('File selected:', file);
+      // console.log('File selected:', file);
 
       this.imageInput.set(file);
 

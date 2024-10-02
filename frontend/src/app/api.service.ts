@@ -25,6 +25,7 @@ export class ApiService {
         })
       );
   }
+
   // stage 1
   // promptContentText(promptText: string) {
   //   return this.httpClient

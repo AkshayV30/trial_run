@@ -133,7 +133,8 @@ export const generatdResultResponse = async (filePath) => {
     if (extractedText) {
       console.log("Extracted Text: ", extractedText);
       logTokenUsage(response);
-      return `Extracted text for prompt  ${filePath} : ${extractedText}`;
+      // return `Extracted text for prompt  ${filePath} : ${extractedText}`;
+      return `${extractedText}`;
     } else {
       console.log("No valid text found in the response.");
       return `No valid text found in the response for: ${filePath} `;
